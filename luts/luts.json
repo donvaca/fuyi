@@ -6,6 +6,5 @@
   { "name": "Portrait", "file": "portrait-lut.png" },
   { "name": "Cinematic", "file": "cinematic-lut.png" },
   { "name": "Gameboy", "file": "gameboy-lut.png" },
-  { "name": "Paloma", "file": "paloma-lut.png" },
   { "name": "Vintage Chrome", "file": "vintagechrome-lut.png" }
 ]
