@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Analog Camera</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #111;
+  color: #fff;
+  font-family: monospace;
+  overflow: hidden;
+}
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+#viewfinder {
+  width: 90px;
+  height: 90px;
+  border: 2px solid #fff;
+  overflow: hidden;
+}
+
+#viewfinder video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.counter {
+  font-size: 22px;
+  letter-spacing: 2px;
+}
+
+.shutter {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #fff;
+  border: 6px solid #ccc;
+  cursor: pointer;
+}
+
+.shutter:active {
+  transform: scale(0.95);
+}
+
+.black-screen {
+  flex: 1;
+  background: #000;
+}
+
+/* ---------- ROLLOS ---------- */
+#film-select {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+}
+
+#film-select h2 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+.films {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.film {
+  padding: 12px 24px;
+  border: 1px solid #fff;
+  cursor: pointer;
+  text-align: center;
+}
+
+.film:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* ---------- REVELADO ---------- */
+#develop {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: none;
+  flex-wrap: wrap;
+  overflow: auto;
+  padding: 10px;
+  z-index: 9999;
+}
+
+#develop img {
+  width: 33.33%;
+  padding: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SELECCION DE ROLLO -->
+<div id="film-select">
+  <h2>SELECT FILM</h2>
+  <div class="films">
+    <div class="film" data-film="classic">Classic Chrome</div>
+    <div class="film" data-film="velvia">Velvia</div>
+    <div class="film" data-film="acros">Acros (B&W)</div>
+    <div class="film" data-film="provia">Provia</div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="top-bar">
+    <div id="viewfinder">
+      <video id="video" autoplay playsinline></video>
+    </div>
+
+    <div class="counter">
+      <span id="count">0</span>/24
+    </div>
+
+    <div class="shutter" id="shutter"></div>
+  </div>
+
+  <div class="black-screen"></div>
+</div>
+
+<div id="develop"></div>
+
+<script>
+const video = document.getElementById('video');
+const shutter = document.getElementById('shutter');
+const countEl = document.getElementById('count');
+const develop = document.getElementById('develop');
+const filmSelect = document.getElementById('film-select');
+const filmButtons = document.querySelectorAll('.film');
+
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+
+let photos = [];
+const MAX_PHOTOS = 24;
+let selectedFilm = null;
+
+/* CONFIGURACION DE ROLLOS */
+const FILMS = {
+  classic: { saturation: 0.8, contrast: 1.1, grayscale: false },
+  velvia:  { saturation: 1.4, contrast: 1.3, grayscale: false },
+  acros:   { saturation: 1, contrast: 1.2, grayscale: true },
+  provia:  { saturation: 1, contrast: 1, grayscale: false }
+};
+
+/* CAMARA */
+navigator.mediaDevices.getUserMedia({
+  video: { facingMode: 'environment' },
+  audio: false
+}).then(stream => {
+  video.srcObject = stream;
+});
+
+/* SELECCION ROLLO */
+filmButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    selectedFilm = FILMS[btn.dataset.film];
+    filmSelect.style.display = 'none';
+  });
+});
+
+/* DISPARO */
+shutter.addEventListener('click', () => {
+  if (!selectedFilm) return;
+  if (photos.length >= MAX_PHOTOS) return;
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  ctx.filter = `
+    saturate(${selectedFilm.saturation})
+    contrast(${selectedFilm.contrast})
+    ${selectedFilm.grayscale ? 'grayscale(1)' : ''}
+  `;
+
+  ctx.drawImage(video, 0, 0);
+  ctx.filter = 'none';
+
+  const imageData = canvas.toDataURL('image/jpeg', 0.85);
+  photos.push(imageData);
+
+  countEl.textContent = photos.length;
+
+  if (photos.length === MAX_PHOTOS) {
+    shutter.style.pointerEvents = 'none';
+    revealFilm();
+  }
+});
+
+/* REVELADO */
+function revealFilm() {
+  develop.style.display = 'flex';
+
+  setTimeout(() => {
+    photos.forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      develop.appendChild(img);
+    });
+  }, 2000);
+}
+</script>
+
+</body>
+</html>

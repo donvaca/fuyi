@@ -1,0 +1,11 @@
+[
+  { "name": "BN", "file": "BN_LUT.png" },
+  { "name": "Netural", "file": "neutral-lut.png" },
+  { "name": "Lifesyle", "file": "Lifestile-lut.png" },
+  { "name": "Landcape", "file": "landscape-lut.png" },
+  { "name": "Portrait", "file": "portrait-lut.png" },
+  { "name": "Cinematic", "file": "cinematic-lut.png" },
+  { "name": "Gameboy", "file": "gameboy-lut.png" },
+  { "name": "Paloma", "file": "paloma-lut.png" },
+  { "name": "Vintage Chrome", "file": "vintagechrome-lut.png" }
+]

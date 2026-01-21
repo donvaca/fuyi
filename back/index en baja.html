@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Analog Camera</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#111;color:#fff;font-family:monospace;overflow:hidden}
+
+.app{width:100vw;height:100vh;display:flex;flex-direction:column}
+
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:12px}
+#viewfinder{width:90px;height:90px;border:2px solid #fff;overflow:hidden}
+#viewfinder video{width:100%;height:100%;object-fit:cover}
+.counter{font-size:22px}
+.shutter{width:80px;height:80px;border-radius:50%;background:#fff;border:6px solid #ccc;cursor:pointer}
+.black-screen{flex:1;background:#000}
+
+/* film select */
+#film-select{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.9);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:10000
+}
+.film{padding:12px 24px;border:1px solid #fff;margin:6px;cursor:pointer}
+.film.active{background:#fff;color:#000}
+
+/* controls */
+.controls{
+  position:fixed;
+  bottom:12px;
+  left:12px;
+  display:flex;
+  gap:12px;
+  z-index:5000
+}
+.btn{
+  padding:8px 12px;
+  border:1px solid #fff;
+  cursor:pointer;
+  background: #000;
+}
+.btn.active{background:#fff;color:#000}
+
+/* develop */
+#develop{
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:none;
+  overflow:auto;
+  padding:12px;
+  z-index:9999;
+  flex-direction:column;
+}
+#develop-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:10px;
+}
+#develop-grid img{
+  width:100%;
+  height:auto;
+  aspect-ratio:auto;
+  object-fit:contain;
+  background:#000;
+  cursor:pointer;
+}
+#develop-controls{
+  margin-top:12px;
+  display:flex;
+  justify-content:center;
+}
+/* develop controls fixed and download button */
+#develop-controls{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:20001}
+.btn.primary{background:#ffd166;color:#000;border-color:#ffd166}
+
+/* flash overlay */
+#flash-overlay{position:fixed;inset:0;background:#000;pointer-events:none;opacity:0;transition:opacity .18s ease;z-index:30000}
+/* confirm modal */
+#confirm-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);z-index:20000}
+.confirm-box{background:#0f0f0f;color:#fff;padding:18px;border:1px solid #fff;max-width:92%;width:340px;border-radius:8px;text-align:center}
+.confirm-buttons{display:flex;gap:12px;justify-content:center;margin-top:12px}
+.confirm-btn{padding:8px 12px;border:1px solid #fff;cursor:pointer}
+.confirm-btn.primary{background:#fff;color:#000}
+/* download button green */
+#downloadRoll{background:#28a745;color:#fff;}
+#downloadRoll:hover{filter:brightness(.95)}
+</style>
+</head>
+
+<body>
+
+<div id="film-select"></div>
+
+<div class="controls">
+  <div class="btn" id="rewind">Poner otro Rollo</div>
+  <div class="btn" id="burn">FECHA / FRAME</div>
+  <div class="btn" id="revealBtn">REVELAR</div>
+</div>
+
+<div class="app">
+  <div class="top-bar">
+    <div id="viewfinder"><video id="video" autoplay playsinline></video></div>
+    <div class="counter"><span id="count">0</span>/24</div>
+    <div class="shutter" id="shutter"></div>
+  </div>
+  <div class="black-screen"></div>
+</div>
+
+<div id="develop">
+  <div id="develop-grid"></div>
+  <div id="develop-controls">
+    <div class="btn" id="downloadRoll" style="display:none">DESCARGAR ROLLO</div>
+    <div class="btn" id="newRoll">CARGAR NUEVO ROLLO</div>
+  </div>
+</div>
+
+<div id="flash-overlay"></div>
+
+<!-- Confirm modal (custom styled) -->
+<div id="confirm-modal">
+  <div class="confirm-box">
+    <div id="confirm-text">¿Confirmar acción?</div>
+    <div class="confirm-buttons">
+      <div class="confirm-btn" id="confirm-cancel">Cancelar</div>
+      <div class="confirm-btn primary" id="confirm-ok">Confirmar</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------- STATE ---------- */
+const video=document.getElementById('video');
+const shutter=document.getElementById('shutter');
+const filmSelect=document.getElementById('film-select');
+const countEl=document.getElementById('count');
+const develop=document.getElementById('develop');
+const grid=document.getElementById('develop-grid');
+const rewindBtn=document.getElementById('rewind');
+const burnBtn=document.getElementById('burn');
+const revealBtn=document.getElementById('revealBtn');
+const newRollBtn=document.getElementById('newRoll');
+
+const canvas=document.createElement('canvas');
+const ctx=canvas.getContext('2d');
+
+// capture scale - Escala de la foto (2x)
+const captureScale=0.9;
+
+const flashOverlay=document.getElementById('flash-overlay');
+// Audio: try normal Audio first, but also prepare an AudioContext-decoded buffer as fallback
+const flashSound=new Audio('flash.mp3');
+flashSound.preload='auto';
+let audioCtx=null;
+let flashBuffer=null;
+try{
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  // preload and decode flash.mp3 for reliable playback via AudioContext
+  fetch('flash.mp3').then(r=>r.arrayBuffer()).then(b=>audioCtx.decodeAudioData(b)).then(buf=>{ flashBuffer=buf; }).catch(()=>{ flashBuffer=null; });
+}catch(e){ audioCtx=null; flashBuffer=null; }
+let _currentFlashSource = null;
+
+let LUTS=[];
+let activeLUT=null;
+let activeLUTFile=localStorage.getItem('activeLUTFile')||null;
+let photos=JSON.parse(localStorage.getItem('photos'))||[];
+let burnInfo=localStorage.getItem('burnInfo')==='true';
+
+countEl.textContent=photos.length;
+burnBtn.classList.toggle('active',burnInfo);
+
+/* ---------- LUT LIST ---------- */
+async function loadLUTList(){
+  const res=await fetch('luts/luts.json');
+  LUTS=await res.json();
+  buildFilmUI();
+  // Restore previously selected LUT if present (so user isn't asked again)
+  if(activeLUTFile){
+    const lut=LUTS.find(l=>l.file===activeLUTFile);
+    if(lut){
+      await loadLUT(lut);
+      activeLUT=lut;
+      // mark UI
+      document.querySelectorAll('.film').forEach(x=>{ if(x.dataset.file===activeLUTFile) x.classList.add('active'); });
+      filmSelect.style.display='none';
+    }
+  }
+}
+
+/* ---------- LOAD LUT ---------- */
+async function loadLUT(lut){
+  return new Promise(res=>{
+    const img=new Image();
+    img.src=`luts/${lut.file}`;
+    img.onload=()=>{
+      const c=document.createElement('canvas');
+      c.width=img.width;
+      c.height=img.height;
+      const cx=c.getContext('2d');
+      cx.drawImage(img,0,0);
+      lut.data=cx.getImageData(0,0,c.width,c.height).data;
+      lut.size=Math.round(Math.cbrt(lut.data.length/4));
+      res();
+    };
+  });
+}
+
+/* ---------- UI ---------- */
+function buildFilmUI(){
+  filmSelect.innerHTML='';
+  LUTS.forEach(lut=>{
+    const b=document.createElement('div');
+    b.className='film';
+    b.textContent=lut.name;
+    b.dataset.file=lut.file;
+    b.onclick=async()=>{
+      if(!lut.data) await loadLUT(lut);
+      activeLUT=lut;
+      document.querySelectorAll('.film').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      // persist selection so reloads don't ask again while roll is active
+      localStorage.setItem('activeLUTFile', lut.file);
+      activeLUTFile=lut.file;
+      filmSelect.style.display='none';
+    };
+    filmSelect.appendChild(b);
+  });
+}
+
+/* ---------- APPLY LUT ---------- */
+function applyLUT3D(){
+  const img=ctx.getImageData(0,0,canvas.width,canvas.height);
+  const d=img.data;
+  const lut=activeLUT.data;
+  const size=activeLUT.size;
+  const w=Math.sqrt(lut.length/4);
+  const tiles=w/size;
+
+  for(let i=0;i<d.length;i+=4){
+    const r=Math.floor(d[i]/255*(size-1));
+    const g=Math.floor(d[i+1]/255*(size-1));
+    const b=Math.floor(d[i+2]/255*(size-1));
+    const x=r+(b%tiles)*size;
+    const y=g+Math.floor(b/tiles)*size;
+    const idx=(y*w+x)*4;
+    d[i]=lut[idx];
+    d[i+1]=lut[idx+1];
+    d[i+2]=lut[idx+2];
+  }
+  ctx.putImageData(img,0,0);
+}
+
+/* ---------- CAMERA ---------- */
+navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
+.then(s=>video.srcObject=s);
+
+/* ---------- SHUTTER ---------- */
+shutter.onclick=async()=>{
+  if(!activeLUT||photos.length>=24) return;
+
+  // play flash sound: prefer AudioContext decoded buffer (avoid double playback)
+  if(audioCtx && flashBuffer){
+    try{
+      if(audioCtx.state==='suspended') await audioCtx.resume();
+      // stop previous source if still playing
+      try{ if(_currentFlashSource){ _currentFlashSource.stop(); _currentFlashSource=null; } }catch(e){}
+      const src=audioCtx.createBufferSource();
+      src.buffer=flashBuffer;
+      src.connect(audioCtx.destination);
+      src.start(0);
+      _currentFlashSource = src;
+      src.onended = ()=>{ if(_currentFlashSource===src) _currentFlashSource=null; };
+    }catch(e){
+      // fallback to regular Audio
+      try{ flashSound.pause(); flashSound.currentTime=0; flashSound.play().catch(()=>{}); }catch(e){}
+    }
+  }else{
+    try{ flashSound.pause(); flashSound.currentTime=0; flashSound.play().catch(()=>{}); }catch(e){}
+  }
+  if(flashOverlay) flashOverlay.style.opacity=1;
+  // small delay so flash is noticeable
+  await new Promise(r=>setTimeout(r,120));
+
+  // capture at higher resolution according to captureScale
+  canvas.width = Math.round(video.videoWidth * captureScale);
+  canvas.height = Math.round(video.videoHeight * captureScale);
+  ctx.drawImage(video,0,0,canvas.width,canvas.height);
+
+  // If burnInfo is active, draw only the date in red BEFORE applying the LUT
+  if(burnInfo){
+    ctx.fillStyle='rgba(255,60,60,0.95)';
+    ctx.font=`${22 * captureScale}px monospace`;
+    ctx.textAlign='right';
+    ctx.fillText(new Date().toLocaleDateString('es-AR'),
+      canvas.width-20,canvas.height-20);
+  }
+
+  // apply LUT to the whole canvas (this will affect the burned date as well)
+  applyLUT3D();
+
+  photos.push(canvas.toDataURL('image/jpeg',0.9));
+  localStorage.setItem('photos',JSON.stringify(photos));
+  countEl.textContent=photos.length;
+
+  // hide flash overlay soon after capture
+  if(flashOverlay) setTimeout(()=>flashOverlay.style.opacity=0,120);
+
+  if(photos.length===24) setTimeout(()=>{ try{ reveal(); }catch(e){ console.error('reveal error',e); } },80);
+};
+
+/* ---------- REVEAL ---------- */
+// Build the develop/grid view and prepare a downloadable ZIP from a photos array
+async function renderDevelopFromPhotos(arr){
+  if(!arr||!arr.length) return;
+  develop.style.display='flex';
+  grid.innerHTML='';
+
+  const zip=new JSZip();
+
+  arr.forEach((p,i)=>{
+    const img=document.createElement('img');
+    img.src=p;
+    img.style.cursor='pointer';
+    img.title='Descargar foto';
+    img.addEventListener('click', async (e)=>{
+      e.preventDefault(); e.stopPropagation();
+      if(window._sharingInProgress) return;
+      window._sharingInProgress = true;
+      const dataURLtoBlob = (dataURL)=>{
+        const parts = dataURL.split(',');
+        const meta = parts[0].match(/:(.*?);/)[1];
+        const binary = atob(parts[1]);
+        const len = binary.length;
+        const u8 = new Uint8Array(len);
+        for(let j=0;j<len;j++) u8[j]=binary.charCodeAt(j);
+        return new Blob([u8], {type: meta});
+      };
+      const blob = dataURLtoBlob(p);
+      const fileName = `photo_${String(i+1).padStart(2,'0')}.jpg`;
+      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+      if(isMobile){
+        try{
+          const file = new File([blob], fileName, {type: blob.type});
+          if(navigator.canShare && navigator.canShare({files:[file]})){
+            try{ await navigator.share({files:[file], title: 'Foto analógica'}); }
+            catch(e){ window._sharingInProgress=false; return; }
+            window._sharingInProgress=false; return;
+          }
+        }catch(e){}
+      }
+      try{ const a=document.createElement('a'); a.href=p; a.download=fileName; document.body.appendChild(a); a.click(); a.remove(); }
+      finally{ window._sharingInProgress=false; }
+    });
+    grid.appendChild(img);
+    zip.file(`photo_${String(i+1).padStart(2,'0')}.jpg`, p.split(',')[1],{base64:true});
+  });
+
+  const blob=await zip.generateAsync({type:'blob'});
+  window._lastRollZip = blob;
+  const dl=document.getElementById('downloadRoll');
+  if(dl){ dl.style.display='inline-block'; dl.onclick=()=>{ saveAs(window._lastRollZip,'analog-roll.zip'); }; }
+}
+
+async function reveal(){
+  try{
+    if(!photos.length) return;
+    // persist revealed photos so the gallery remains across sessions
+    localStorage.setItem('revealedPhotos', JSON.stringify(photos));
+    // ensure develop view is visible immediately
+    develop.style.display='flex';
+    await renderDevelopFromPhotos(photos);
+  }catch(err){
+    console.error('reveal failed', err);
+    // fallback: at least show the develop panel
+    develop.style.display='flex';
+  }finally{
+    try{
+      // clear the in-progress roll and active LUT
+      localStorage.removeItem('photos');
+      localStorage.removeItem('activeLUTFile');
+      activeLUTFile=null; activeLUT=null; photos=[]; countEl.textContent=0;
+    }catch(e){}
+  }
+}
+
+/* ---------- CONTROLS ---------- */
+revealBtn.onclick=reveal;
+
+newRollBtn.onclick=async()=>{
+  const ok=await showConfirm('Esta acción eliminará las fotos del carrete actual. ¿Deseas continuar?', 'Eliminar', 'Cancelar');
+  if(!ok) return;
+  develop.style.display='none';
+  grid.innerHTML='';
+  // clear active LUT so user re-selects
+  localStorage.removeItem('activeLUTFile');
+  activeLUTFile=null;
+  activeLUT=null;
+  document.querySelectorAll('.film').forEach(x=>x.classList.remove('active'));
+  filmSelect.style.display='flex';
+  // hide download button and clear blob
+  const dl=document.getElementById('downloadRoll'); if(dl) dl.style.display='none'; window._lastRollZip=null;
+  // also remove any previously revealed gallery
+  localStorage.removeItem('revealedPhotos');
+};
+
+rewindBtn.onclick=async()=>{
+  const ok=await showConfirm('Esta acción eliminará las fotos del carrete actual. ¿Deseas continuar?', 'Eliminar', 'Cancelar');
+  if(!ok) return;
+  localStorage.removeItem('photos');
+  photos=[];
+  countEl.textContent=0;
+  develop.style.display='none';
+  // also clear selected roll
+  localStorage.removeItem('activeLUTFile');
+  activeLUTFile=null;
+  activeLUT=null;
+  document.querySelectorAll('.film').forEach(x=>x.classList.remove('active'));
+  filmSelect.style.display='flex';
+  // hide download button and clear blob
+  const dl=document.getElementById('downloadRoll'); if(dl) dl.style.display='none'; window._lastRollZip=null;
+  // also remove any previously revealed gallery
+  localStorage.removeItem('revealedPhotos');
+};
+
+burnBtn.onclick=()=>{
+  burnInfo=!burnInfo;
+  localStorage.setItem('burnInfo',burnInfo);
+  burnBtn.classList.toggle('active',burnInfo);
+};
+
+// Styled confirmation modal API
+function showConfirm(message, okText='Confirmar', cancelText='Cancelar'){
+  return new Promise(res=>{
+    const modal=document.getElementById('confirm-modal');
+    const txt=document.getElementById('confirm-text');
+    const okBtn=document.getElementById('confirm-ok');
+    const cancelBtn=document.getElementById('confirm-cancel');
+    txt.textContent=message;
+    okBtn.textContent=okText;
+    cancelBtn.textContent=cancelText;
+    modal.style.display='flex';
+    const cleanup=()=>{ modal.style.display='none'; okBtn.removeEventListener('click',onOk); cancelBtn.removeEventListener('click',onCancel); };
+    const onOk=()=>{ cleanup(); res(true); };
+    const onCancel=()=>{ cleanup(); res(false); };
+    okBtn.addEventListener('click', onOk, {once:true});
+    cancelBtn.addEventListener('click', onCancel, {once:true});
+  });
+}
+
+/* ---------- INIT ---------- */
+(async function init(){
+  await loadLUTList();
+  try{
+    const revealed = JSON.parse(localStorage.getItem('revealedPhotos')||'null');
+    if(revealed && revealed.length){
+      // show develop gallery and hide film selection until user loads a new roll
+      await renderDevelopFromPhotos(revealed);
+      filmSelect.style.display='none';
+    }
+  }catch(e){}
+})();
+</script>
+
+</body>
+</html>

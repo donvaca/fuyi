@@ -1,0 +1,31 @@
+# Archivos ocultos de macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+# Archivos de metadatos
+Icon?
+._*
+
+# Carpetas del sistema
+.Spotlight-V100
+.Trashes
+.fseventsd
+.TemporaryItems
+
+
+
+
+
+
+
+# Godot 4+ specific ignores
+.godot/
+.nomedia
+
+# Godot-specific ignores
+.import/
+export.cfg
+export_credentials.cfg
+
+# Imported translations (automatically generated from CSV files)
+*.translation
