@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 362.8 362.8">
+  <!-- Generator: Adobe Illustrator 30.1.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 136)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+      }
+
+      .st1 {
+        fill: #a64b49;
+      }
+
+      .st2 {
+        fill: #c19070;
+      }
+
+      .st3 {
+        fill: #2d4154;
+      }
+
+      .st4 {
+        fill: #cf8a6b;
+      }
+
+      .st5 {
+        fill: #2e4051;
+      }
+
+      .st6 {
+        fill: #c47c60;
+      }
+
+      .st7 {
+        fill: #313740;
+      }
+
+      .st8 {
+        fill: #c38668;
+      }
+
+      .st9 {
+        fill: #a19475;
+      }
+
+      .st10 {
+        fill: #334654;
+      }
+
+      .st11 {
+        fill: #d2ab7e;
+      }
+
+      .st12 {
+        fill: #6e857b;
+      }
+
+      .st13 {
+        fill: #2d4d60;
+      }
+
+      .st14 {
+        fill: #8c917a;
+      }
+
+      .st15 {
+        fill: #c95c4a;
+      }
+
+      .st16 {
+        fill: #738e7d;
+      }
+
+      .st17 {
+        fill: #50847c;
+      }
+
+      .st18 {
+        fill: #32404e;
+      }
+
+      .st19 {
+        fill: #ca6a4c;
+      }
+
+      .st20 {
+        fill: #798e7e;
+      }
+
+      .st21 {
+        fill: #d1a078;
+      }
+
+      .st22 {
+        fill: #983f46;
+      }
+
+      .st23 {
+        fill: #c98762;
+      }
+
+      .st24 {
+        fill: #ce7e65;
+      }
+
+      .st25 {
+        fill: #547a78;
+      }
+
+      .st26 {
+        fill: #303b47;
+      }
+
+      .st27 {
+        fill: #506b70;
+      }
+
+      .st28 {
+        fill: #2c2d38;
+      }
+
+      .st29 {
+        fill: #b1454b;
+      }
+
+      .st30 {
+        fill: #a92f44;
+      }
+
+      .st31 {
+        fill: #aba685;
+      }
+
+      .st32 {
+        fill: #bb5d4c;
+      }
+
+      .st33 {
+        fill: #c7b789;
+      }
+
+      .st34 {
+        fill: #313b48;
+      }
+
+      .st35 {
+        fill: #849881;
+      }
+
+      .st36 {
+        fill: #c0966e;
+      }
+
+      .st37 {
+        fill: #c9976b;
+      }
+
+      .st38 {
+        fill: #b5514f;
+      }
+
+      .st39 {
+        fill: #b9af87;
+      }
+
+      .st40 {
+        fill: #b4574b;
+      }
+
+      .st41 {
+        fill: #2f3f4f;
+      }
+
+      .st42 {
+        fill: #c94d4c;
+      }
+
+      .st43 {
+        fill: #d29769;
+      }
+
+      .st44 {
+        fill: #842f40;
+      }
+
+      .st45 {
+        fill: #35505f;
+      }
+
+      .st46 {
+        fill: #33454e;
+      }
+
+      .st47 {
+        fill: #365464;
+      }
+
+      .st48 {
+        fill: #b6b190;
+      }
+
+      .st49 {
+        fill: #e9e8e3;
+      }
+
+      .st50 {
+        fill: #9d9e83;
+      }
+
+      .st51 {
+        fill: #303a45;
+      }
+
+      .st52 {
+        fill: #b2b998;
+      }
+
+      .st53 {
+        fill: #364c54;
+      }
+
+      .st54 {
+        fill: #416365;
+      }
+
+      .st55 {
+        fill: #303c4a;
+      }
+
+      .st56 {
+        fill: #c3634c;
+      }
+
+      .st57 {
+        fill: #d2d1d8;
+      }
+
+      .st58 {
+        fill: #31363d;
+      }
+
+      .st59 {
+        fill: #487371;
+      }
+
+      .st60 {
+        fill: #313942;
+      }
+
+      .st61 {
+        fill: #336d73;
+      }
+
+      .st62 {
+        fill: #355566;
+      }
+
+      .st63 {
+        fill: #2f3e4c;
+      }
+
+      .st64 {
+        fill: #d3b585;
+      }
+
+      .st65 {
+        fill: #356172;
+      }
+
+      .st66 {
+        fill: #ca5a52;
+      }
+
+      .st67 {
+        fill: #913a44;
+      }
+
+      .st68 {
+        fill: #456b6b;
+      }
+
+      .st69 {
+        fill: #8fa185;
+      }
+
+      .st70 {
+        fill: #447376;
+      }
+
+      .st71 {
+        fill: #355b6c;
+      }
+
+      .st72 {
+        fill: #cb6758;
+      }
+
+      .st73 {
+        fill: #c76751;
+      }
+
+      .st74 {
+        fill: #cd735e;
+      }
+
+      .st75 {
+        fill: #ad514a;
+      }
+
+      .st76 {
+        fill: #47636c;
+      }
+
+      .st77 {
+        fill: #8f9781;
+      }
+
+      .st78 {
+        fill: #658c7f;
+      }
+
+      .st79 {
+        fill: #344b59;
+      }
+
+      .st80 {
+        fill: #5a7474;
+      }
+
+      .st81 {
+        fill: #73887d;
+      }
+
+      .st82 {
+        fill: #979378;
+      }
+
+      .st83 {
+        fill: #80907c;
+      }
+
+      .st84 {
+        fill: #d09571;
+      }
+
+      .st85 {
+        fill: #b9aa88;
+      }
+
+      .st86 {
+        fill: #d29d69;
+      }
+
+      .st87 {
+        fill: #3d5b5f;
+      }
+
+      .st88 {
+        fill: #303743;
+      }
+
+      .st89 {
+        fill: #bc6757;
+      }
+
+      .st90 {
+        fill: #3e5c68;
+      }
+
+      .st91 {
+        fill: #cd9265;
+      }
+
+      .st92 {
+        fill: #b85c53;
+      }
+
+      .st93 {
+        fill: #818f7f;
+      }
+
+      .st94 {
+        fill: #9f4547;
+      }
+
+      .st95 {
+        fill: #ad3a48;
+      }
+
+      .st96 {
+        fill: #2c3844;
+      }
+
+      .st97 {
+        fill: #c57c5e;
+      }
+
+      .st98 {
+        fill: #efefee;
+      }
+
+      .st99 {
+        fill: #31353b;
+      }
+
+      .st100 {
+        fill: #2e323e;
+      }
+
+      .st101 {
+        fill: #c67259;
+      }
+
+      .st102 {
+        fill: #ac9573;
+      }
+
+      .st103 {
+        fill: #64817b;
+      }
+
+      .st104 {
+        fill: #bf9978;
+      }
+
+      .st105 {
+        fill: #bca280;
+      }
+
+      .st106 {
+        fill: #d4be8b;
+      }
+
+      .st107 {
+        fill: #4c7b76;
+      }
+
+      .st108 {
+        fill: #647c78;
+      }
+
+      .st109 {
+        clip-path: url(#clippath);
+      }
+
+      .st110 {
+        fill: #2f3e49;
+      }
+
+      .st111 {
+        fill: #b69671;
+      }
+
+      .st112 {
+        fill: #c0725b;
+      }
+
+      .st113 {
+        fill: #3a535a;
+      }
+
+      .st114 {
+        fill: #8a3442;
+      }
+    </style>
+    <clipPath id="clippath">
+      <circle class="st0" cx="181.4" cy="181.4" r="140"/>
+    </clipPath>
+  </defs>
+  <rect class="st49" width="362.8" height="362.8" rx="40.5" ry="40.5"/>
+  <g class="st109">
+    <g>
+      <g>
+        <rect class="st61" x="36.4" y="152.8" width="28.7" height="28.7"/>
+        <rect class="st70" x="62.5" y="152.8" width="28.7" height="28.7"/>
+        <rect class="st25" x="88.7" y="152.8" width="28.7" height="28.7"/>
+        <rect class="st103" x="114.8" y="152.8" width="28.7" height="28.7"/>
+        <rect class="st81" x="140.9" y="152.8" width="28.7" height="28.7"/>
+        <rect class="st93" x="167.1" y="152.8" width="28.7" height="28.7"/>
+        <rect class="st77" x="193.2" y="152.8" width="28.7" height="28.7"/>
+        <rect class="st50" x="219.4" y="152.8" width="28.7" height="28.7"/>
+        <rect class="st31" x="245.5" y="152.8" width="28.7" height="28.7"/>
+        <rect class="st39" x="271.7" y="152.8" width="28.7" height="28.7"/>
+        <rect class="st33" x="297.8" y="152.8" width="28.7" height="28.7"/>
+      </g>
+      <g>
+        <rect class="st78" x="36.4" y="181.4" width="28.7" height="28.7"/>
+        <rect class="st16" x="62.5" y="181.4" width="28.7" height="28.7"/>
+        <rect class="st83" x="88.7" y="181.4" width="28.7" height="28.7"/>
+        <rect class="st14" x="114.8" y="181.4" width="28.7" height="28.7"/>
+        <rect class="st82" x="140.9" y="181.4" width="28.7" height="28.7"/>
+        <rect class="st9" x="167.1" y="181.4" width="28.7" height="28.7"/>
+        <rect class="st102" x="193.2" y="181.4" width="28.7" height="28.7"/>
+        <rect class="st111" x="219.4" y="181.4" width="28.7" height="28.7"/>
+        <rect class="st36" x="245.5" y="181.4" width="28.7" height="28.7"/>
+        <rect class="st37" x="271.7" y="181.4" width="28.7" height="28.7"/>
+        <rect class="st43" x="297.8" y="181.4" width="28.7" height="28.7"/>
+      </g>
+      <g>
+        <rect class="st52" x="36.4" y="210.1" width="28.7" height="28.7"/>
+        <rect class="st48" x="62.5" y="210.1" width="28.7" height="28.7"/>
+        <rect class="st85" x="88.7" y="210.1" width="28.7" height="28.7"/>
+        <rect class="st105" x="114.8" y="210.1" width="28.7" height="28.7"/>
+        <rect class="st104" x="140.9" y="210.1" width="28.7" height="28.7"/>
+        <rect class="st2" x="167.1" y="210.1" width="28.7" height="28.7"/>
+        <rect class="st8" x="193.2" y="210.1" width="28.7" height="28.7"/>
+        <rect class="st6" x="219.4" y="210.1" width="28.7" height="28.7"/>
+        <rect class="st101" x="245.5" y="210.1" width="28.7" height="28.7"/>
+        <rect class="st73" x="271.7" y="210.1" width="28.7" height="28.7"/>
+        <rect class="st15" x="297.8" y="210.1" width="28.7" height="28.7"/>
+      </g>
+      <g>
+        <rect class="st106" x="36.4" y="238.7" width="28.7" height="28.7"/>
+        <rect class="st64" x="62.5" y="238.7" width="28.7" height="28.7"/>
+        <rect class="st11" x="88.7" y="238.7" width="28.7" height="28.7"/>
+        <rect class="st21" x="114.8" y="238.7" width="28.7" height="28.7"/>
+        <rect class="st84" x="140.9" y="238.7" width="28.7" height="28.7"/>
+        <rect class="st4" x="167.1" y="238.7" width="28.7" height="28.7"/>
+        <rect class="st24" x="193.2" y="238.7" width="28.7" height="28.7"/>
+        <rect class="st74" x="219.4" y="238.7" width="28.7" height="28.7"/>
+        <rect class="st72" x="245.5" y="238.7" width="28.7" height="28.7"/>
+        <rect class="st66" x="271.7" y="238.7" width="28.7" height="28.7"/>
+        <rect class="st42" x="297.8" y="238.7" width="28.7" height="28.7"/>
+      </g>
+      <g>
+        <rect class="st86" x="36.4" y="267.4" width="28.7" height="28.7"/>
+        <rect class="st91" x="62.5" y="267.4" width="28.7" height="28.7"/>
+        <rect class="st23" x="88.7" y="267.4" width="28.7" height="28.7"/>
+        <rect class="st97" x="114.8" y="267.4" width="28.7" height="28.7"/>
+        <rect class="st112" x="140.9" y="267.4" width="28.7" height="28.7"/>
+        <rect class="st89" x="167.1" y="267.4" width="28.7" height="28.7"/>
+        <rect class="st92" x="193.2" y="267.4" width="28.7" height="28.7"/>
+        <rect class="st38" x="219.4" y="267.4" width="28.7" height="28.7"/>
+        <rect class="st29" x="245.5" y="267.4" width="28.7" height="28.7"/>
+        <rect class="st95" x="271.7" y="267.4" width="28.7" height="28.7"/>
+        <rect class="st30" x="297.8" y="267.4" width="28.7" height="28.7"/>
+      </g>
+      <g>
+        <rect class="st19" x="36.4" y="296.1" width="28.7" height="28.7"/>
+        <rect class="st56" x="62.5" y="296.1" width="28.7" height="28.7"/>
+        <rect class="st32" x="88.7" y="296.1" width="28.7" height="28.7"/>
+        <rect class="st40" x="114.8" y="296.1" width="28.7" height="28.7"/>
+        <rect class="st75" x="140.9" y="296.1" width="28.7" height="28.7"/>
+        <rect class="st1" x="167.1" y="296.1" width="28.7" height="28.7"/>
+        <rect class="st94" x="193.2" y="296.1" width="28.7" height="28.7"/>
+        <rect class="st22" x="219.4" y="296.1" width="28.7" height="28.7"/>
+        <rect class="st67" x="245.5" y="296.1" width="28.7" height="28.7"/>
+        <rect class="st114" x="271.7" y="296.1" width="28.7" height="28.7"/>
+        <rect class="st44" x="297.8" y="296.1" width="28.7" height="28.7"/>
+      </g>
+      <g>
+        <rect class="st99" x="36.4" y="38.1" width="28.7" height="28.7"/>
+        <rect class="st58" x="62.5" y="38.1" width="28.7" height="28.7"/>
+        <rect class="st7" x="88.7" y="38.1" width="28.7" height="28.7"/>
+        <rect class="st60" x="114.8" y="38.1" width="28.7" height="28.7"/>
+        <rect class="st51" x="140.9" y="38.1" width="28.7" height="28.7"/>
+        <rect class="st26" x="167.1" y="38.1" width="28.7" height="28.7"/>
+        <rect class="st55" x="193.2" y="38.1" width="28.7" height="28.7"/>
+        <rect class="st63" x="219.4" y="38.1" width="28.7" height="28.7"/>
+        <rect class="st41" x="245.5" y="38.1" width="28.7" height="28.7"/>
+        <rect class="st5" x="271.7" y="38.1" width="28.7" height="28.7"/>
+        <rect class="st3" x="297.8" y="38.1" width="28.7" height="28.7"/>
+      </g>
+      <g>
+        <rect class="st28" x="36.4" y="66.8" width="28.7" height="28.7"/>
+        <rect class="st100" x="62.5" y="66.8" width="28.7" height="28.7"/>
+        <rect class="st88" x="88.7" y="66.8" width="28.7" height="28.7"/>
+        <rect class="st34" x="114.8" y="66.8" width="28.7" height="28.7"/>
+        <rect class="st18" x="140.9" y="66.8" width="28.7" height="28.7"/>
+        <rect class="st10" x="167.1" y="66.8" width="28.7" height="28.7"/>
+        <rect class="st79" x="193.2" y="66.8" width="28.7" height="28.7"/>
+        <rect class="st45" x="219.4" y="66.8" width="28.7" height="28.7"/>
+        <rect class="st62" x="245.5" y="66.8" width="28.7" height="28.7"/>
+        <rect class="st71" x="271.7" y="66.8" width="28.7" height="28.7"/>
+        <rect class="st65" x="297.8" y="66.8" width="28.7" height="28.7"/>
+      </g>
+      <g>
+        <rect class="st96" x="36.4" y="95.4" width="28.7" height="28.7"/>
+        <rect class="st110" x="62.5" y="95.4" width="28.7" height="28.7"/>
+        <rect class="st46" x="88.7" y="95.4" width="28.7" height="28.7"/>
+        <rect class="st53" x="114.8" y="95.4" width="28.7" height="28.7"/>
+        <rect class="st113" x="140.9" y="95.4" width="28.7" height="28.7"/>
+        <rect class="st87" x="167.1" y="95.4" width="28.7" height="28.7"/>
+        <rect class="st54" x="193.2" y="95.4" width="28.7" height="28.7"/>
+        <rect class="st68" x="219.4" y="95.4" width="28.7" height="28.7"/>
+        <rect class="st59" x="245.5" y="95.4" width="28.7" height="28.7"/>
+        <rect class="st107" x="271.7" y="95.4" width="28.7" height="28.7"/>
+        <rect class="st17" x="297.8" y="95.4" width="28.7" height="28.7"/>
+      </g>
+      <g>
+        <rect class="st13" x="36.4" y="124.1" width="28.7" height="28.7"/>
+        <rect class="st47" x="62.5" y="124.1" width="28.7" height="28.7"/>
+        <rect class="st90" x="88.7" y="124.1" width="28.7" height="28.7"/>
+        <rect class="st76" x="114.8" y="124.1" width="28.7" height="28.7"/>
+        <rect class="st27" x="140.9" y="124.1" width="28.7" height="28.7"/>
+        <rect class="st80" x="167.1" y="124.1" width="28.7" height="28.7"/>
+        <rect class="st108" x="193.2" y="124.1" width="28.7" height="28.7"/>
+        <rect class="st12" x="219.4" y="124.1" width="28.7" height="28.7"/>
+        <rect class="st20" x="245.5" y="124.1" width="28.7" height="28.7"/>
+        <rect class="st35" x="271.7" y="124.1" width="28.7" height="28.7"/>
+        <rect class="st69" x="297.8" y="124.1" width="28.7" height="28.7"/>
+      </g>
+    </g>
+  </g>
+  <path class="st98" d="M181.4,119.6c-34.1,0-61.8,27.7-61.8,61.8s27.7,61.8,61.8,61.8,61.8-27.7,61.8-61.8-27.7-61.8-61.8-61.8ZM181.4,233.6c-28.8,0-52.2-23.3-52.2-52.2s23.3-52.2,52.2-52.2,52.2,23.3,52.2,52.2-23.4,52.2-52.2,52.2Z"/>
+  <circle class="st57" cx="312.8" cy="50.1" r="15.7"/>
+</svg>
