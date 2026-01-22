@@ -190,13 +190,14 @@ body.ui-ready.develop-visible #film-select {
 <div class="controls" style="display:none">
   <div class="btn" id="rewind">Poner otro Rollo</div>
   <div class="btn" id="burn">FECHA / FRAME</div>
-  <div class="btn" id="revealBtn">REVELAR</div>
+ <div style="display: none;" class="btn" id="revealBtn">REVELAR</div>
 </div>
 
 <div class="app">
   <div class="top-bar" style="display:none">
     <div id="viewfinder"><video id="video" autoplay playsinline></video></div>
-    <div class="counter"><span id="count">0</span>/24</div>
+    <div class="counter"><span id="count">0</span>/<span id="rollTotal">24</span></div>
+    <div id="selectedRoll" style="color:#000; font-size:14px;padding-left:10px;align-self:center">Rollo: -</div>
     <div class="shutter" id="shutter"></div>
   </div>
   <div class="black-screen"></div>
@@ -264,7 +265,23 @@ let photoIds=JSON.parse(localStorage.getItem('photoIds'))||[];
 window._objectURLs = window._objectURLs || [];
 let burnInfo=localStorage.getItem('burnInfo')==='true';
 
-countEl.textContent=photoIds.length;
+const rollTotalEl = document.getElementById('rollTotal');
+const selectedRollEl = document.getElementById('selectedRoll');
+let rollSize = parseInt(localStorage.getItem('rollSize')||'24', 10);
+
+function updateCounterDisplay(){
+  countEl.textContent = photoIds.length;
+  if(rollTotalEl) rollTotalEl.textContent = rollSize;
+}
+
+function setRollSize(sz){
+  rollSize = Number(sz);
+  localStorage.setItem('rollSize', String(rollSize));
+  document.querySelectorAll('.roll-size').forEach(b=>{ b.classList.toggle('active', Number(b.dataset.size)===rollSize); });
+  updateCounterDisplay();
+}
+
+updateCounterDisplay();
 burnBtn.classList.toggle('active',burnInfo);
 // Favorites: store favorite LUT filenames so favorites appear first
 let favoriteLUTFiles = JSON.parse(localStorage.getItem('favoriteLUTFiles')||'[]');
@@ -298,6 +315,8 @@ async function loadLUTList(){
       activeLUT=lut;
       // mark UI
       document.querySelectorAll('.film').forEach(x=>{ if(x.dataset.file===activeLUTFile) x.classList.add('active'); });
+      if(selectedRollEl) selectedRollEl.textContent = 'Rollo: ' + lut.name;
+      updateCounterDisplay();
       filmSelect.style.display='none';
     }
   }
@@ -363,6 +382,25 @@ async function idbClearAll(){
 /* ---------- UI ---------- */
 function buildFilmUI(){
   filmSelect.innerHTML='';
+  // header: roll size selector
+  const header = document.createElement('div');
+  header.style.display = 'flex';
+  header.style.alignItems = 'center';
+  header.style.gap = '8px';
+  header.style.margin = '8px 12px';
+  const lbl = document.createElement('div');
+  lbl.textContent = 'Fotos por rollo:';
+  header.appendChild(lbl);
+  [12,24,36].forEach(sz=>{
+    const b = document.createElement('div');
+    b.className = 'btn roll-size' + (Number(rollSize)===sz? ' active':'');
+    b.dataset.size = String(sz);
+    b.textContent = String(sz);
+    b.addEventListener('click', (e)=>{ setRollSize(Number(b.dataset.size)); });
+    header.appendChild(b);
+  });
+  filmSelect.appendChild(header);
+
   const row = document.createElement('div');
   row.className = 'films-row';
   LUTS.forEach(lut=>{
@@ -386,6 +424,9 @@ function buildFilmUI(){
       // persist selection so reloads don't ask again while roll is active
       localStorage.setItem('activeLUTFile', lut.file);
       activeLUTFile=lut.file;
+      // show selected roll label in the main UI
+      if(selectedRollEl) selectedRollEl.textContent = 'Rollo: ' + lut.name;
+      updateCounterDisplay();
       filmSelect.style.display='none';
     };
 
@@ -455,7 +496,7 @@ startCamera();
 
 /* ---------- SHUTTER ---------- */
 shutter.onclick=async()=>{
-  if(!activeLUT||photoIds.length>=24) return;
+  if(!activeLUT||photoIds.length>=rollSize) return;
 
   // play flash sound: prefer AudioContext decoded buffer (avoid double playback)
   if(audioCtx && flashBuffer){
@@ -505,8 +546,8 @@ shutter.onclick=async()=>{
       await idbPutBlob(id, blob);
       photoIds.push(id);
       localStorage.setItem('photoIds', JSON.stringify(photoIds));
-      countEl.textContent = photoIds.length;
-      if(photoIds.length===24) setTimeout(()=>{ try{ reveal(); }catch(e){ console.error('reveal error',e); } },80);
+      updateCounterDisplay();
+      if(photoIds.length===rollSize) setTimeout(()=>{ try{ reveal(); }catch(e){ console.error('reveal error',e); } },80);
     }catch(e){
       console.error('Failed to store photo blob', e);
     }
@@ -645,7 +686,8 @@ async function reveal(){
       // clear the in-progress roll and active LUT (blobs remain in IDB for revealed gallery)
       localStorage.removeItem('photoIds');
       localStorage.removeItem('activeLUTFile');
-      activeLUTFile=null; activeLUT=null; photoIds=[]; countEl.textContent=0;
+      activeLUTFile=null; activeLUT=null; photoIds=[]; updateCounterDisplay();
+      if(selectedRollEl) selectedRollEl.textContent = 'Rollo: -';
     }catch(e){}
   }
 }
@@ -664,6 +706,9 @@ newRollBtn.onclick=async()=>{
   activeLUT=null;
   document.querySelectorAll('.film').forEach(x=>x.classList.remove('active'));
   filmSelect.style.display='flex';
+  // clear in-progress photos and UI
+  localStorage.removeItem('photoIds'); photoIds=[]; updateCounterDisplay();
+  if(selectedRollEl) selectedRollEl.textContent = 'Rollo: -';
   // Make sure main UI is visible again (remove develop-visible state)
   try{ document.body.classList.remove('develop-visible'); }catch(e){}
   try{ document.querySelector('.top-bar').style.display=''; document.querySelector('.controls').style.display=''; }catch(e){}
@@ -681,12 +726,13 @@ rewindBtn.onclick=async()=>{
   if(!ok) return;
   localStorage.removeItem('photoIds');
   photoIds=[];
-  countEl.textContent=0;
+  updateCounterDisplay();
   develop.style.display='none';
   // also clear selected roll
   localStorage.removeItem('activeLUTFile');
   activeLUTFile=null;
   activeLUT=null;
+  if(selectedRollEl) selectedRollEl.textContent = 'Rollo: -';
   document.querySelectorAll('.film').forEach(x=>x.classList.remove('active'));
   filmSelect.style.display='flex';
   // restore main UI in case it was hidden by develop-visible
